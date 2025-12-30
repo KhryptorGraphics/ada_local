@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from collections import defaultdict
 
-MODEL = "functiongemma:270m"
+MODEL = "functiongemma-custom"
 URL = "http://localhost:11434/api/generate"
 
 # Official FunctionGemma JSON Schema format for function definitions
@@ -97,11 +97,11 @@ FUNCTIONS = [
         "type": "function",
         "function": {
             "name": "passthrough",
-            "description": "Routes the query to a conversational AI model when no specific tool action is needed. Use this for greetings, general questions, explanations, and conversations that don't require lights, timers, search, or calendar actions.",
+            "description": "DEFAULT FUNCTION - Use this whenever no other function is clearly needed. This is the fallback for: greetings (hello, hi, good morning), chitchat (how are you, what's your name), general knowledge questions, explanations, conversations, and ANY query that does NOT explicitly require controlling lights, setting timers, searching the web, or managing calendar events. When in doubt, use passthrough.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "thinking": {"type": "boolean", "description": "Set to true for complex reasoning, math, logic, or multi-step problems. Set to false for simple greetings, chitchat, or straightforward questions."}
+                    "thinking": {"type": "boolean", "description": "Set to true for complex reasoning/math/logic, false for simple greetings and chitchat."}
                 },
                 "required": ["thinking"]
             }

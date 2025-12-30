@@ -90,11 +90,11 @@ FUNCTIONS = [
         "type": "function",
         "function": {
             "name": "passthrough",
-            "description": "Routes the query to a conversational AI model when no specific tool action is needed.",
+            "description": "DEFAULT FUNCTION - Use this whenever no other function is clearly needed. This is the fallback for: greetings (hello, hi, good morning), chitchat (how are you, what's your name), general knowledge questions, explanations, conversations, and ANY query that does NOT explicitly require controlling lights, setting timers, searching the web, or managing calendar events. When in doubt, use passthrough.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "thinking": {"type": "boolean", "description": "Set to true for complex reasoning, false for simple chat."}
+                    "thinking": {"type": "boolean", "description": "Set to true for complex reasoning/math/logic, false for simple greetings and chitchat."}
                 },
                 "required": ["thinking"]
             }
@@ -537,11 +537,11 @@ def generate_training_data():
         examples.append(entry)
         count += 1
     
-    # === passthrough (thinking=false): 150 examples ===
+    # === passthrough (thinking=false): 200 examples ===
     # Need to repeat simple prompts since we only have ~75 unique ones
-    simple_prompts = PASSTHROUGH_SIMPLE * 2  # Double the list
+    simple_prompts = PASSTHROUGH_SIMPLE * 3  # Triple the list
     random.shuffle(simple_prompts)
-    for i, prompt_text in enumerate(simple_prompts[:150]):
+    for i, prompt_text in enumerate(simple_prompts[:200]):
         entry = {
             "prompt": build_prompt(prompt_text),
             "completion": build_completion("passthrough", thinking="false"),
@@ -550,11 +550,11 @@ def generate_training_data():
         }
         examples.append(entry)
     
-    # === passthrough (thinking=true): 150 examples ===
+    # === passthrough (thinking=true): 200 examples ===
     # Need to repeat complex prompts since we only have ~75 unique ones
-    complex_prompts = PASSTHROUGH_COMPLEX * 2  # Double the list
+    complex_prompts = PASSTHROUGH_COMPLEX * 3  # Triple the list
     random.shuffle(complex_prompts)
-    for i, prompt_text in enumerate(complex_prompts[:150]):
+    for i, prompt_text in enumerate(complex_prompts[:200]):
         entry = {
             "prompt": build_prompt(prompt_text),
             "completion": build_completion("passthrough", thinking="true"),
@@ -601,7 +601,9 @@ def main():
     print("=" * 60)
     
     # Generate
-    print("\nGenerating 1050 training examples (150 per category)...")
+    print("\nGenerating 1150 training examples...")
+    print("  - 150 each for: control_light, web_search, set_timer, create_calendar_event, read_calendar")
+    print("  - 200 each for: passthrough_simple, passthrough_complex")
     examples = generate_training_data()
     
     # Validate
